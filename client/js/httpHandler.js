@@ -34,12 +34,13 @@
       processData: false,
       success: () => {
         // reload the page
-        window.location = window.location.href;
+        // window.location = window.location.href;
       }
     });
   };
 
   $('form').on('submit', function(e) {
+    // console.log('form submitted!@#@!#@!#QWDASD', e);
     e.preventDefault();
 
     var form = $('form .file')[0];
@@ -53,7 +54,7 @@
       console.log('Not a jpg file!');
       return;
     }
-
+    console.log(file);
     ajaxFileUplaod(file);
   });
 

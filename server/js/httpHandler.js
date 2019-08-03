@@ -15,6 +15,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
   // console.log(module.exports.backgroundImageFile);
+  //GET METHODS
   if (req.method === "GET" && req.url === '/background.jpg') {
     fs.readFile(module.exports.backgroundImageFile, function(err, data) {
       if (err) {
@@ -25,8 +26,17 @@ module.exports.router = (req, res, next = ()=>{}) => {
     });
   } else if(req.method === "GET" && messageQueue !== null) {
     res.end(messageQueue.dequeue());
-  } else {
-    res.end();
+  }
+  //POST METHODS
+  else if(req.method === "POST"){
+    console.log(res);
+    fs.writeFile(module.exports.backgroundImageFile, req._data, (err, data) => {
+      if(err) {
+        res.writeHead(404, headers);
+        throw err;
+      }
+    });
+    res.end('uploaded');
   }
   // console.log(res);
   next(); // invoke next() at the end of a request to help with testing!
