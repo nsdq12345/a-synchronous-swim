@@ -27,24 +27,46 @@ module.exports.router = (req, res, next = ()=>{}) => {
   } else if(req.method === "GET" && messageQueue !== null) {
     res.end(messageQueue.dequeue());
   }
-  //POST METHODS
+  //OST METHODS
   else if(req.method === "POST"){
-    var body = "";
+    // var body;
+    // req.on('data', function(chunk) {
+    //   console.log(chunk);
+    //   var buff = chunk;
+    //   if (buff) {
+    //     body += buff;
+    //   }
+    //     console.log('READABLE:', buff);
+    // });
+    // req.on('end', function() {
+    //   var file = multipart.getFile(Buffer.from(body));
+    //   console.log("BODy:",body);
+    //   fs.writeFile(module.exports.backgroundImageFile, file, 'binary',(err, data) => {
+    //     if(err) {
+    //       res.writeHead(404, headers);
+    //       throw err;
+    //     }
+    //   });
+    // })
 
-    req.on('readable', function() {
-      var buff = req.read();
-        body += buff;
+    var imageData = Buffer.alloc(0);
+
+    req.on('data', function(chunk) {
+      imageData = Buffer.concat([imageData, chunk]);
     });
-    req.on('end', function() {
-      var file = multipart.getFile(Buffer.from(body));
-      console.log(file);
-      fs.writeFile(module.exports.backgroundImageFile, file.data, (err, data) => {
-        if(err) {
-          res.writeHead(404, headers);
-          throw err;
-        }
-      });
+
+
+    req.on('end', function(){
+      var file = multipart.getFile(imageData)
+      fs.writeFile(module.exports.backgroundImageFile, file.data,(err, data) => {
+            if(err) {
+              res.writeHead(404, headers);
+              throw err;
+            }
+          });
     })
+
+
     // fs.writeFile(module.exports.backgroundImageFile, file, (err, data) => {
     //   if(err) {
     //     res.writeHead(404, headers);

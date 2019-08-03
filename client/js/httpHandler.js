@@ -25,6 +25,7 @@
   const ajaxFileUplaod = (file) => {
     var formData = new FormData();
     formData.append('file', file);
+    console.log('FORMDATA:', formData);
     $.ajax({
       type: 'POST',
       data: formData,
@@ -34,7 +35,7 @@
       processData: false,
       success: () => {
         // reload the page
-        // window.location = window.location.href;
+        window.location = window.location.href;
       }
     });
   };
