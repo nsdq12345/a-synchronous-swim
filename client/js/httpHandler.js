@@ -41,7 +41,6 @@
   };
 
   $('form').on('submit', function(e) {
-    // console.log('form submitted!@#@!#@!#QWDASD', e);
     e.preventDefault();
 
     var form = $('form .file')[0];
