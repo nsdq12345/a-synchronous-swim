@@ -16,15 +16,26 @@ module.exports.router = (req, res, next = ()=>{}) => {
   res.writeHead(200, headers);
   //GET METHODS
   if (req.method === "GET" && req.url === '/background.jpg') {
+
     fs.readFile(module.exports.backgroundImageFile, function(err, data) {
       if (err) {
-        console.log(err);
         res.writeHead(404, headers);
-      }
+      } else {
         res.end(data);
+      }
     });
-  } else if(req.method === "GET" && messageQueue !== null) {
-    res.end(messageQueue.dequeue());
+
+    // res.writeHead(404, headers);
+    // res.end();
+  } else if(req.method === "GET" && req.url === '/') {
+    if (messageQueue) {
+      res.end(messageQueue.dequeue());
+    } else {
+      res.end();
+    }
+  } else if (req.method === "GET") {
+    res.writeHead(404, headers);
+    res.end();
   }
   //POST METHODS
   else if(req.method === "POST"){
@@ -38,7 +49,13 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
     req.on('end', function(){
       var file = multipart.getFile(imageData)
-      fs.writeFile(module.exports.backgroundImageFile, file.data,(err, data) => {
+
+      var fileToLoad = file;
+      if (file && file.data) {
+        fileToLoad = file.data;
+      }
+
+      fs.writeFile(module.exports.backgroundImageFile, fileToLoad,(err, data) => {
             if(err) {
               res.writeHead(404, headers);
               throw err;
@@ -46,7 +63,11 @@ module.exports.router = (req, res, next = ()=>{}) => {
           });
     })
 
+    res.writeHead(201, headers);
     res.end('uploaded');
+  }
+  else {
+    res.end()
   }
   next(); // invoke next() at the end of a request to help with testing!
 };
