@@ -29,13 +29,28 @@ module.exports.router = (req, res, next = ()=>{}) => {
   }
   //POST METHODS
   else if(req.method === "POST"){
-    console.log(res);
-    fs.writeFile(module.exports.backgroundImageFile, req._data, (err, data) => {
-      if(err) {
-        res.writeHead(404, headers);
-        throw err;
-      }
+    var body = "";
+
+    req.on('readable', function() {
+      var buff = req.read();
+        body += buff;
     });
+    req.on('end', function() {
+      var file = multipart.getFile(Buffer.from(body));
+      console.log(file);
+      fs.writeFile(module.exports.backgroundImageFile, file.data, (err, data) => {
+        if(err) {
+          res.writeHead(404, headers);
+          throw err;
+        }
+      });
+    })
+    // fs.writeFile(module.exports.backgroundImageFile, file, (err, data) => {
+    //   if(err) {
+    //     res.writeHead(404, headers);
+    //     throw err;
+    //   }
+    // });
     res.end('uploaded');
   }
   // console.log(res);
