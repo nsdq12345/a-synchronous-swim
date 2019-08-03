@@ -5,7 +5,18 @@
   //
   // TODO: build the swim command fetcher here
   //
-
+  const fetchCommand = () => {
+    $.ajax({
+      url: serverUrl,
+      type: 'GET',
+      success: (data) => {
+        console.log(data);
+        SwimTeam.move(data);
+      }
+    });
+    setTimeout(fetchCommand.bind(this), 500);
+  }
+  fetchCommand();
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
@@ -17,7 +28,7 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: 'http://127.0.0.1:3000',
       cache: false,
       contentType: false,
       processData: false,
